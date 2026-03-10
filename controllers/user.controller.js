@@ -1,4 +1,5 @@
 import UserModel from '../models/user.model.js';
+import bcrypt from "bcryptjs";
 
 export async function registerUserControllers(req,res) {
     try {
@@ -11,6 +12,23 @@ export async function registerUserControllers(req,res) {
                 success: false
             })
         }
+        let user= UserModel.findOne({email});
+        if(user){
+            return res.json({
+                messsage: "Already register",
+                error:true,
+                success:false,
+            })
+        }
+        const salt = await bcrypt.genSaltSync(10);
+        const hash = await bcrypt.hashSync(password, salt);
+
+        const payload= {
+            name, email,
+            password: hash,
+        }
+        let newUser= new UserModel(payload);
+        let save= newUser.save();
         
     } catch (error) {
         return res.status(500).json({

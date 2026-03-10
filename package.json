@@ -11,6 +11,7 @@
     "dev": "nodemon index.js"
   },
   "dependencies": {
+    "bcryptjs": "^3.0.3",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.6",
     "dotenv": "^17.3.1",
@@ -20,6 +21,7 @@
     "morgan": "^1.10.1",
     "nodemon": "^3.1.14",
     "path": "^0.12.7",
+    "resend": "^6.9.3",
     "vite": "^7.3.1"
   }
 }
