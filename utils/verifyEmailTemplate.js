@@ -1,5 +1,5 @@
 
-const verifyEmailTemplate= (name, url)=>{
+const verifyEmailTemplate= ({name, url})=>{
     return `(
         <p>Dear ${name}</p>
         <p>Thankyou for registering ServMe </p>

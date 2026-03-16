@@ -2,7 +2,7 @@ import { Resend } from 'resend';
 import dotenv from 'dotenv';
 dotenv.config();
 
-if(!RESEND_API_KEY){
+if(!process.env.RESEND_API_KEY){
     console.log("Provide RESEND_API_KEY inside env file");
 }
 

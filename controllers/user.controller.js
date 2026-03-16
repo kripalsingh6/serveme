@@ -1,19 +1,20 @@
 import sendEmail from '../config/sendEmail.js';
 import UserModel from '../models/user.model.js';
 import bcrypt from "bcryptjs";
+import verifyEmailTemplate from '../utils/verifyEmailTemplate.js';
 
 export async function registerUserControllers(req,res) {
     try {
         const{ name, email, password}= req.body;
 
-        if(! name || email || password){
+        if(! name || !email || !password){
             return res.status(500).json({
                 messsage: "provide name email password ",
                 error: true,
                 success: false
             })
         }
-        let user= UserModel.findOne({email});
+        let user= await UserModel.findOne({email});
         if(user){
             return res.json({
                 messsage: "Already register",
@@ -21,26 +22,39 @@ export async function registerUserControllers(req,res) {
                 success:false,
             })
         }
-        const salt = await bcrypt.genSaltSync(10);
-        const hash = await bcrypt.hashSync(password, salt);
+        const salt =  bcrypt.genSaltSync(10);
+        const hash =  bcrypt.hashSync(password, salt);
 
         const payload= {
             name, email,
             password: hash,
+            role: "USER"
         }
         let newUser= new UserModel(payload);
-        let save= newUser.save();
+        let save= await newUser.save();
 
-        let VerifyEmail= await sendEmail({
-            sendTo:email,
+        let verifyEmailUrl = `${process.env.FRONTEND_URL}/verify-email/${save._id}`;
+
+         await sendEmail({
+            tosend: email,
             subject: "Verify email from Servme",
-            html,
+            html: verifyEmailTemplate({
+                name,
+                url: verifyEmailUrl,
+            })
+        });
+
+        return res.json({
+            message:"user register successfully",
+            error: false,
+            success:true,
+            data: save
         })
         
         
     } catch (error) {
-        return res.status(500).json({
-            messsage: error.messsage || error,
+        return res.status(400).json({
+            message: error.message || error,
             error: true,
             success: false,
         });
