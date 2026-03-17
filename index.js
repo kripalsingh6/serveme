@@ -26,7 +26,9 @@ connectDB();
 app.get("/",(req,res)=>{
     res.send("welcome to my server");
 });
+
 app.use("/api/user",userRouter);
+
 const port = process.env.PORT || 8080;
 app.listen(port, ()=>{
     console.log(`server is running at port ${port} `);

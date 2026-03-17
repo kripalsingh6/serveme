@@ -9,7 +9,7 @@ export async function registerUserControllers(req,res) {
 
         if(! name || !email || !password){
             return res.status(500).json({
-                messsage: "provide name email password ",
+                message: "provide name email password ",
                 error: true,
                 success: false
             })
@@ -17,7 +17,7 @@ export async function registerUserControllers(req,res) {
         let user= await UserModel.findOne({email});
         if(user){
             return res.json({
-                messsage: "Already register",
+                message: "Already register",
                 error:true,
                 success:false,
             })
@@ -60,3 +60,62 @@ export async function registerUserControllers(req,res) {
         });
     }
 } 
+
+export async function verifyEmailController(req,res) {
+    try {
+
+        const {code}= req.body;
+
+        let user= new UserModel.findById({_id : code});
+
+        if(!user){
+            return res.status(400).json({
+                message: "Invalid Code",
+                error: true,
+                success:false,
+            })
+        }
+        const updateUser= await UserModel.updateOne({_id: code},{verify_email:true});
+
+        return res.json({
+            message:"Verify Email Done",
+            success:true,
+            error:false
+        });
+
+
+        
+    } catch (error) {
+        return res.status(500).json({
+            message: error.message || error,
+            error: true,
+            success: true,
+        });
+    }
+    
+}
+
+export async function loginController(req, res) {
+    try {
+
+        let {email , password}= req.body;
+
+        let user = await UserModel.findOne({email});
+
+        if(!user){
+            return res.status(400).json({
+                message: "User not register",
+                error: true,
+                success:false
+            });
+        }
+        
+    } catch (error) {
+        return res.status(500).json({
+            message: error.message || error,
+            success: false,
+            error: true
+        })
+    }
+    
+}
